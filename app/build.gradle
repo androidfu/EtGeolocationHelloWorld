@@ -1,0 +1,50 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 21
+    buildToolsVersion "21.1.2"
+
+    defaultConfig {
+        // TODO Replace with your applicationId
+        applicationId "com.example.helloworld"
+        // TODO Set the minSdkVersion to your application's requirements, note, however that you must specify a minimum of at least 10.
+        minSdkVersion 10
+        targetSdkVersion 21
+        versionCode 1
+        versionName "1.0"
+
+        testApplicationId "com.example.helloworld.test"
+        testInstrumentationRunner "android.test.InstrumentationTestRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+
+        debug {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    // This will include any other jar files required for your project
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+
+    // ET SDK
+    compile 'com.exacttarget.etpushsdk:etsdk:3.5.0@aar'
+
+    // Google Play Services for GCM and Location
+    compile 'com.google.android.gms:play-services:6.1.71'
+
+    // Google's Support v4 for Notification compatibility
+    compile 'com.android.support:support-v4:21.0.2'
+
+    // 3rd Party Libraries Required for SDK integration
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.0.6'
+    compile 'com.j256.ormlite:ormlite-android:4.48'
+    compile 'com.radiusnetworks:AndroidIBeaconLibrary:0.7.6'
+}

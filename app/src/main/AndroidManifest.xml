@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+    TODO Update the package to match your application's package
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.helloworld">
+
+    <!--
+        Permissions for Push notifications
+        TODO update the name to match your package + .permission.C2D_MESSAGE
+    -->
+    <permission
+        android:name="com.example.helloworld.permission.C2D_MESSAGE"
+        android:protectionLevel="signature" />
+
+    <!--
+        TODO Update the name to match your package + .permission.C2D_MESSAGE
+    -->
+    <uses-permission android:name="com.example.helloworld.permission.C2D_MESSAGE" />
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+    <!--
+        Additional Permissions required by JB4SDK
+    -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.BROADCAST_STICKY" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+
+    <!--
+        Required if you're going to use Location
+    -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
+    <!-- JB4A SDK Permissions for iBeacons -->
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <!-- END JB4A SDK Permissions for iBeacons -->
+
+    <!--
+        Don't forget to add an Application class to your application and call readyAimFire()
+        TODO Update the name to match your app's application class
+    -->
+    <application
+        android:name=".HelloWorldApplication"
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme">
+
+        <!--
+            If the user upgrades the application make sure we re-register with Google Cloud Messaging
+            to ensure we have the latest Device ID.
+        -->
+        <!--
+            Introduced in 3.5.x
+        -->
+        <receiver android:name="com.exacttarget.etpushsdk.ETPackageReplacedReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.PACKAGE_ADDED" />
+                <action android:name="android.intent.action.PACKAGE_REMOVED" />
+                <action android:name="android.intent.action.PACKAGE_REPLACED" />
+
+                <data android:scheme="com.example.helloworld" />
+            </intent-filter>
+        </receiver>
+        <!--
+            Required by Location Services
+        -->
+        <receiver android:name="com.exacttarget.etpushsdk.location.receiver.LocationChangedReceiver" />
+        <receiver android:name="com.exacttarget.etpushsdk.location.receiver.PassiveLocationChangedReceiver" />
+        <receiver android:name="com.exacttarget.etpushsdk.ETLocationTimeoutReceiver" />
+        <receiver android:name="com.exacttarget.etpushsdk.ETLocationWakeupReceiver" />
+        <receiver android:name="com.exacttarget.etpushsdk.ETGeofenceReceiver" />
+        <receiver android:name="com.exacttarget.etpushsdk.ETLocationProviderChangeReceiver">
+            <intent-filter>
+                <action android:name="android.location.PROVIDERS_CHANGED" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>
+
+
+        <!--
+            Figure out where they are if they just turned on their phone (e.g. plane trip)
+        -->
+        <receiver android:name="com.exacttarget.etpushsdk.location.receiver.BootReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+
+        <!--
+            ???
+        -->
+        <receiver android:name="com.exacttarget.etpushsdk.location.receiver.PowerStateChangedReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.ACTION_BATTERY_LOW" />
+                <action android:name="android.intent.action.ACTION_BATTERY_OKAY" />
+            </intent-filter>
+        </receiver>
+
+
+        <!--
+            Generic receiver to handle push notifications.  Extend or replace this class to change
+            the default behavior.
+            TODO Change the category name to match your package/name
+        -->
+        <receiver
+            android:name="com.exacttarget.etpushsdk.ET_GenericReceiver"
+            android:permission="com.google.android.c2dm.permission.SEND">
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
+
+                <category android:name="com.example.helloworld" />
+            </intent-filter>
+        </receiver>
+
+        <!--
+            ET Broadcast Receiver for handling notification taps.
+        -->
+        <receiver android:name="com.exacttarget.etpushsdk.ETOpenReceiver">
+            <intent-filter>
+                <action android:name="com.example.helloworld.MESSAGE_OPENED" />
+            </intent-filter>
+        </receiver>
+
+        <!--
+            ET Broadcast Receivers for for sending data (required)
+        -->
+        <receiver android:name="com.exacttarget.etpushsdk.ETSendDataReceiver" />
+
+        <!--
+            ET Service handlers for sending data (required)
+        -->
+        <service android:name="com.exacttarget.etpushsdk.ETSendDataIntentService" />
+
+        <!--
+            Location related services
+        -->
+        <service
+            android:name="com.exacttarget.etpushsdk.ETLocationTimeoutService"
+            android:enabled="true" />
+        <service
+            android:name="com.exacttarget.etpushsdk.ETLocationWakeupService"
+            android:enabled="true" />
+        <service
+            android:name="com.exacttarget.etpushsdk.ETLocationProviderChangeService"
+            android:enabled="true" />
+        <service
+            android:name="com.exacttarget.etpushsdk.ETGeofenceIntentService"
+            android:enabled="true" />
+
+        <!--
+            JB4A SDK Service handlers for iBeacons
+        -->
+        <service
+            android:name="com.radiusnetworks.ibeacon.service.IBeaconService"
+            android:enabled="true"
+            android:exported="true"
+            android:isolatedProcess="false"
+            android:label="iBeacon" />
+        <service
+            android:name="com.radiusnetworks.ibeacon.IBeaconIntentProcessor"
+            android:enabled="true">
+            <meta-data
+                android:name="background"
+                android:value="true" />
+            <intent-filter android:priority="1">
+                <action android:name="com.exacttarget.jb4a.sdk_tester.DID_RANGING" />
+                <action android:name="com.exacttarget.jb4a.sdk_tester.DID_MONITORING" />
+            </intent-filter>
+        </service>
+
+        <!--
+            TODO Point this to your app's activity
+        -->
+        <activity
+            android:name=".ui.activities.MainActivity"
+            android:label="@string/app_name" />
+
+        <!--
+            A landing page to handle OpenDirect and CloudPage messages, extend or replace these with
+            your own Activities to change the default behavior.
+        -->
+        <activity
+            android:name="com.exacttarget.etpushsdk.ETLandingPagePresenter"
+            android:label="Landing Page" />
+
+        <!--
+            An activity-alias gives us flexibility in the future.  It allows for future versions of
+            the application to change the launcher activity without disturbing the users' icon on
+            their home screens.
+
+            The alias just has to be after the activity that it references in the targetActivity
+            field but it seems safer to just put it at the end of the activity list. BMOTE 20141210
+        -->
+        <activity-alias
+            android:name="com.example.helloworld.ApplicationLauncher"
+            android:targetActivity=".ui.activities.MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
+        <receiver
+            android:name=".receivers.MtAlarmReceiver"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="mt_propagation_alarm" />
+            </intent-filter>
+        </receiver>
+    </application>
+
+</manifest>
